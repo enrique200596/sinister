@@ -130,7 +130,7 @@ class View
                             ]),
                             'sectionPasswordVerify' => new Component('section', ['id' => 'sectionPasswordVerify'], '', [
                                 'label' => new Component('label', ['for' => 'passwordVerify'], 'Verificar contraseña'),
-                                'input' => new Component('input', ['type' => 'passwordVerify', 'name' => 'passwordVerify', 'id' => 'passwordVerify']),
+                                'input' => new Component('input', ['type' => 'password', 'name' => 'passwordVerify', 'id' => 'passwordVerify']),
                                 'span' => new Component('span', ['id' => 'spanPasswordVerify'])
                             ]),
                             'input' => new Component('input', ['type' => 'submit', 'value' => 'REGISTRARSE'], ''),
