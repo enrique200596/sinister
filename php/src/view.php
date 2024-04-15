@@ -100,6 +100,7 @@ class View
             case 'signUp':
                 $this->getComponent('html')->getSubComponents('head')->getSubComponents('title')->setValue('Iniciar sesión - SinisterApp');
                 $rc = new RouteController();
+                $ec = new ErrorController();
                 $this->getComponent('html')->getSubComponents('body')->setSubComponents([
                     'header' => new Component('header', [], '', [
                         'h1' => new Component('h1', [], 'REGISTRARSE'),
@@ -131,7 +132,7 @@ class View
                             'sectionPasswordVerify' => new Component('section', ['id' => 'sectionPasswordVerify'], '', [
                                 'label' => new Component('label', ['for' => 'passwordVerify'], 'Verificar contraseña'),
                                 'input' => new Component('input', ['type' => 'password', 'name' => 'passwordVerify', 'id' => 'passwordVerify']),
-                                'span' => new Component('span', ['id' => 'spanPasswordVerify'])
+                                'span' => new Component('span', ['id' => 'spanPasswordVerify'], $ec->getError('signUpPasswordVerify'))
                             ]),
                             'input' => new Component('input', ['type' => 'submit', 'value' => 'REGISTRARSE'], ''),
                             'p' => new Component('p', [], 'Si ya tienes un usuario debes iniciar sesión:'),
