@@ -1,5 +1,6 @@
 <?php
 require_once "sessionController.php";
+require_once "component.php";
 
 class ErrorController
 {
@@ -44,7 +45,29 @@ class ErrorController
 
     public function removeError(string $errorName)
     {
-        unset($this->errors[$errorName]);
+        if ($this->checkError($errorName) === true) {
+            unset($this->errors[$errorName]);
+            $this->updateErrors();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getErrorsComponents(string $type)
+    {
+        $components = [];
+        $contador = 1;
+        foreach ($this->errors as $value) {
+            $components[$type . $contador] = new Component($type, [], $value);
+            $contador++;
+        }
+        return $components;
+    }
+
+    public function resetErrors()
+    {
+        $this->errors = [];
         $this->updateErrors();
     }
 }

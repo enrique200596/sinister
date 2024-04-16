@@ -1,46 +1,38 @@
 <?php
-require_once 'view.php';
+require_once 'app.php';
 
 class RouteController
 {
     private $routes;
+
     public function __construct()
     {
-        $this->addRoute(
-            'view',
-            'signIn',
-            function () {
-                $v = new View();
-                $v->buildPage('signIn');
-                $v->show();
-            }
-        );
+        $this->addRoute('view', 'signIn', function () {
+            $app = new App();
+            $app->showSignInView();
+        });
 
-        $this->addRoute(
-            'view',
-            'signUp',
-            function () {
-                $v = new View();
-                $v->buildPage('signUp');
-                $v->show();
-            }
-        );
+        $this->addRoute('view', 'signUp', function () {
+            $app = new App();
+            $app->showSignUpView();
+        });
 
-        $this->addRoute(
-            'view',
-            'homeWithoutLoggingIn',
-            function () {
-                $v = new View();
-                $v->buildPage('homeWithoutLoggingIn');
-                $v->show();
-            }
-        );
+        $this->addRoute('view', 'homeWithoutLoggingIn', function () {
+            $app = new App();
+            $app->showHomeWithoutLogginInView();
+        });
+
+        $this->addRoute('view', 'notificationPage', function () {
+            $app = new App();
+            $app->showNotificationPageView();
+        });
 
         $this->addRoute(
             'user',
             'signIn',
             function () {
-                var_dump($_POST);
+                $app = new App();
+                $app->signIn();
             }
         );
 
@@ -48,8 +40,44 @@ class RouteController
             'user',
             'signUp',
             function () {
+                $errors = false;
+                $ec = new ErrorController();
+                if ($_POST['name'] === '') {
+                    $ec->addError('signUpName', 'Debe ingresar su nombre, no puede quedar vacío.');
+                    $errors = true;
+                }
+                if (strlen($_POST['birthdate']) === 0) {
+                    $ec->addError('signUpBirthdate', 'Debe ingresar su fecha de nacimiento, no puede quedar vacío.');
+                    $errors = true;
+                }
+                if ($_POST['email'] === '') {
+                    $ec->addError('signUpEmail', 'Debe ingresar su correo electrónico, no puede quedar vacío.');
+                    $errors = true;
+                }
+                if ($_POST['password'] === '') {
+                    $ec->addError('signUpPassword', 'Debe ingresar una contraseña, no puede quedar vacío.');
+                    $errors = true;
+                }
+                if ($_POST['passwordVerify'] === '') {
+                    $ec->addError('signUpPasswordVerify', 'Debe ingresar la misma contraseña, no puede quedar vacío.');
+                    $errors = true;
+                }
                 if (!($_POST['password'] === $_POST['passwordVerify'])) {
-                    $this->redirect('error-signUpPasswordVerify');
+                    $ec->addError('signUpPasswordVerify', 'Las contraseñas no coinciden, compruebe que ambas sean iguales.');
+                    $errors = true;
+                }
+                if ($errors === true) {
+                    $sc = new SessionController();
+                    $sc->addData('signUpForm', $_POST);
+                    $this->redirect('error-signUp');
+                } else {
+                    $u = new User($_POST['email'], $_POST['password'], $_POST['name'], $_POST['birthdate']);
+                    if ($u->store() === true) {
+                        $ec->addError('notificationSuccessful', 'Su registro fue completado con éxito, los administradores le otorgarán una llave de acceso para que puedas iniciar sesión.');
+                    } else {
+                        $ec->addError('notificationFailed', 'Su registro no pudo ser completado, contactese con los administradores para obtener más información al respecto.');
+                    }
+                    $this->redirect('view-notificationPage');
                 }
             }
         );
@@ -66,10 +94,30 @@ class RouteController
 
         $this->addRoute(
             'error',
-            'signUpPasswordVerify',
+            'signUp',
             function () {
+                $sc = new SessionController();
+                $_POST = $sc->getData('signUpForm');
+                $sc->removeData('signUpForm');
                 $v = new View();
                 $v->buildPage('signUp');
+                $ec = new ErrorController();
+                $ec->resetErrors();
+                $v->show();
+            }
+        );
+
+        $this->addRoute(
+            'error',
+            'signIn',
+            function () {
+                $sc = new SessionController();
+                $_POST = $sc->getData('signInForm');
+                $sc->removeData('signInForm');
+                $v = new View();
+                $v->buildPage('signIn');
+                $ec = new ErrorController();
+                $ec->resetErrors();
                 $v->show();
             }
         );
@@ -83,7 +131,6 @@ class RouteController
             $function,
             $accessKey
         );
-
         $this->routes[$r->getName()] = $r;
     }
 

@@ -29,4 +29,9 @@ class SessionController
             unset($_SESSION[$dataName]);
         }
     }
+
+    public function createCookie(string $cookieName, mixed $value)
+    {
+        setcookie($cookieName, $value, (time() * 60) * 10);
+    }
 }
