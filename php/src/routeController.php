@@ -27,6 +27,26 @@ class RouteController
             $app->viewNotificationPage();
         });
 
+        $this->addRoute('view', 'homeOperator', function () {
+            $app = new App();
+            $app->viewHomeOperator();
+        });
+
+        $this->addRoute('view', 'sinisterOperator', function () {
+            $app = new App();
+            $app->viewSinisterOperator();
+        });
+
+        $this->addRoute('view', 'taskOperator', function () {
+            $app = new App();
+            $app->viewTaskOperator();
+        });
+
+        $this->addRoute('view', 'solutionOperator', function () {
+            $app = new App();
+            $app->viewSolutionOperator();
+        });
+
         $this->addRoute('user', 'signIn', function () {
             $app = new App();
             $app->userSignIn();
@@ -37,45 +57,20 @@ class RouteController
             $app->userSignUp();
         });
 
-        $this->addRoute(
-            'error',
-            'unknownRoute',
-            function () {
-                $v = new View();
-                $v->buildPage('errorUnknownRoute');
-                $v->show();
-            }
-        );
+        $this->addRoute('error', 'unknownRoute', function () {
+            $app = new App();
+            $app->errorUnknownRoute();
+        });
 
-        $this->addRoute(
-            'error',
-            'signUp',
-            function () {
-                $sc = new SessionController();
-                $_POST = $sc->getData('signUpForm');
-                $sc->removeData('signUpForm');
-                $v = new View();
-                $v->buildPage('signUp');
-                $ec = new ErrorController();
-                $ec->resetErrors();
-                $v->show();
-            }
-        );
+        $this->addRoute('error', 'signUp', function () {
+            $app = new App();
+            $app->errorSignUp();
+        });
 
-        $this->addRoute(
-            'error',
-            'signIn',
-            function () {
-                $sc = new SessionController();
-                $_POST = $sc->getData('signInForm');
-                $sc->removeData('signInForm');
-                $v = new View();
-                $v->buildPage('signIn');
-                $ec = new ErrorController();
-                $ec->resetErrors();
-                $v->show();
-            }
-        );
+        $this->addRoute('error', 'signIn', function () {
+            $app = new App();
+            $app->errorSignIn();
+        });
     }
 
     private function addRoute(string $object, string $process, Closure $function, string $accessKey = '')

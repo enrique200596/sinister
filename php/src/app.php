@@ -3,6 +3,7 @@ require_once 'view.php';
 require_once 'routeController.php';
 require_once 'sessionController.php';
 require_once 'errorController.php';
+require_once 'user.php';
 
 class App
 {
@@ -22,9 +23,22 @@ class App
 
     public function viewHomeWithoutLoggingIn()
     {
-        $v = new View();
-        $v->buildPage('homeWithoutLoggingIn');
-        $v->show();
+        $sc = new SessionController();
+        if ($sc->getData('user') === null) {
+            $v = new View();
+            $v->buildPage('homeWithoutLoggingIn');
+            $v->show();
+        } else {
+            $u = $sc->getData('user');
+            $rc = new RouteController();
+            if ($u->checkAccessKey('Administrator') === true) {
+                $rc->redirect('view-homeAdministrator');
+            } elseif ($u->checkAccessKey('Executive') === true) {
+                $rc->redirect('view-homeExecutive');
+            } elseif ($u->checkAccessKey('Operator') === true) {
+                $rc->redirect('view-homeOperator');
+            }
+        }
     }
 
     public function viewNotificationPage()
@@ -33,6 +47,34 @@ class App
         $ec = new ErrorController();
         $v->buildPage('notificationPage');
         $ec->resetErrors();
+        $v->show();
+    }
+
+    public function viewHomeOperator()
+    {
+        $v = new View();
+        $v->buildPage('homeOperator');
+        $v->show();
+    }
+
+    public function viewSinisterOperator()
+    {
+        $v = new View();
+        $v->buildPage('sinisterOperator');
+        $v->show();
+    }
+
+    public function viewTaskOperator()
+    {
+        $v = new View();
+        $v->buildPage('taskOperator');
+        $v->show();
+    }
+
+    public function viewSolutionOperator()
+    {
+        $v = new View();
+        $v->buildPage('solutionOperator');
         $v->show();
     }
 
@@ -63,8 +105,10 @@ class App
             if ($u->checkEmail() === true) {
                 if ($u->checkPassword() === true) {
                     $u->load();
-                    if ($_POST['rememberMe'] === "on") {
-                        $sc->createCookie('sinisterAppUserSession', $u->getId());
+                    if (isset($_POST['rememberMe']) === true) {
+                        if ($_POST['rememberMe'] === "on") {
+                            $sc->createCookie('sinisterAppUserSession', $u->getId());
+                        }
                     }
                     $sc->addData('user', $u);
                     if ($u->checkAccessKey('Administrator') === true) {
@@ -131,5 +175,36 @@ class App
             }
             $rc->redirect('view-notificationPage');
         }
+    }
+
+    public function errorUnknownRoute()
+    {
+        $v = new View();
+        $v->buildPage('errorUnknownRoute');
+        $v->show();
+    }
+
+    public function errorSignUp()
+    {
+        $sc = new SessionController();
+        $_POST = $sc->getData('signUpForm');
+        $sc->removeData('signUpForm');
+        $v = new View();
+        $v->buildPage('signUp');
+        $ec = new ErrorController();
+        $ec->resetErrors();
+        $v->show();
+    }
+
+    public function errorSignIn()
+    {
+        $sc = new SessionController();
+        $_POST = $sc->getData('signInForm');
+        $sc->removeData('signInForm');
+        $v = new View();
+        $v->buildPage('signIn');
+        $ec = new ErrorController();
+        $ec->resetErrors();
+        $v->show();
     }
 }

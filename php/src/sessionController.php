@@ -15,6 +15,8 @@ class SessionController
     {
         if ($this->checkData($dataName)) {
             return $_SESSION['sinisterApp'][$dataName];
+        } else {
+            return null;
         }
     }
 
