@@ -1,16 +1,15 @@
 <?php
+
 class Route
 {
-    private $object;
-    private $process;
-    private $function;
-    private $accessKey;
+    private string $object;
+    private string $process;
+    private array $accessKey;
 
-    public function __construct($object = '', $process = '', $function = null, $accessKey = null)
+    public function __construct($object = '', $process = '', $accessKey = [])
     {
         $this->setObject($object);
         $this->setProcess($process);
-        $this->setFunction($function);
         $this->setAccessKey($accessKey);
     }
 
@@ -19,34 +18,24 @@ class Route
         $this->object = $object;
     }
 
-    public function getObject()
-    {
-        return $this->object;;
-    }
-
     public function setProcess(string $process)
     {
         $this->process = $process;
     }
 
-    public function getProcess()
-    {
-        return $this->process;;
-    }
-
-    public function setFunction(Closure|null $function)
-    {
-        $this->function = $function;
-    }
-
-    public function getFunction()
-    {
-        return $this->function;;
-    }
-
-    public function setAccessKey(string|null $accessKey)
+    public function setAccessKey(array $accessKey)
     {
         $this->accessKey = $accessKey;
+    }
+
+    public function getObject()
+    {
+        return $this->object;;
+    }
+
+    public function getProcess()
+    {
+        return $this->process;
     }
 
     public function getAccessKey()
@@ -54,32 +43,37 @@ class Route
         return $this->accessKey;
     }
 
-    public function identifyObject()
+    public function identifyObject(): void
     {
         if (isset($_GET['object']) === true) {
             $this->setObject($_GET['object']);
         }
     }
 
-    public function identifyProcess()
+    public function identifyProcess(): void
     {
         if (isset($_GET['process']) === true) {
             $this->setProcess($_GET['process']);
         }
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->getObject() . '-' . $this->getProcess();
     }
 
-    public function getUrl()
+    public function getUrl(): string
     {
         return 'index.php?object=' . $this->getObject() . '&process=' . $this->getProcess();
     }
 
-    public function compareAccessKey($userAccessKey)
+    public function addAccessKey(string $accessKey): void
     {
-        return password_verify($userAccessKey, $this->getAccessKey());
+        $this->accessKey[] = $accessKey;
+    }
+
+    public function checkAccessKey(string $accessKey): string|int|bool
+    {
+        return array_search($accessKey, $this->accessKey);
     }
 }
