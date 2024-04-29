@@ -86,8 +86,84 @@ class View
                     ])
                 ]);
                 break;
+            case 'homeAdministrator':
+                $this->getComponent('html')->getSubComponents('head')->getSubComponents('title')->setValue('Inicio - ADMINISTRADORES - SinisterApp');
+                $rc = new RouteController();
+                $this->getComponent('html')->getSubComponents('body')->setSubComponents([
+                    'header' => new Component('header', [], '', [
+                        'h1' => new Component('h1', [], 'INICIO - ADMINISTRADORES'),
+                        'h2' => new Component('h2', [], 'SinisterApp')
+                    ]),
+                    'main' => new Component('main', [], '', [
+                        'p' => new Component('p', [], 'Bienvenido a SinisterApp, una aplicación para gestionar los siniestros de vehículos de manera eficiente.<br>Te encuentras en la sección de INICIO - ADMINISTRADORES, revisa la barra de navegación para poder utilizar la aplicación.'),
+                        'ul' => new Component('ul', [], '', [
+                            'li1' => new Component('li', [], '', [
+                                'a' => new Component('a', ['href' => $rc->getRoute('view-sinisterAdministrator')->getUrl()], 'SINIESTROS'),
+                            ]),
+                            'li2' => new Component('li', [], '', [
+                                'a' => new Component('a', ['href' => $rc->getRoute('view-taskAdministrator')->getUrl()], 'TAREAS'),
+                            ]),
+                            'li3' => new Component('li', [], '', [
+                                'a' => new Component('a', ['href' => $rc->getRoute('view-solutionAdministrator')->getUrl()], 'SOLUCIONES')
+                            ]),
+                            'li4' => new Component('li', [], '', [
+                                'a' => new Component('a', ['href' => $rc->getRoute('view-userAdministrator')->getUrl()], 'USUARIOS')
+                            ])
+                        ])
+                    ]),
+                    'footer' => new Component('footer', [], '', [
+                        'ul' => new Component('ul', [], '', [
+                            'li1' => new Component('li', [], '', [
+                                'a' => new Component('a', ['href' => '#'], '¿Quiénes somos?'),
+                            ]),
+                            'li2' => new Component('li', [], '', [
+                                'a' => new Component('a', ['href' => '#'], 'Contáctanos'),
+                            ])
+                        ]),
+                        'span' => new Component('span', [], 'ILLESOFT © Derechos reservados')
+                    ])
+                ]);
+                break;
+            case 'homeExecutive':
+                $this->getComponent('html')->getSubComponents('head')->getSubComponents('title')->setValue('Inicio - EJECUTIVOS - SinisterApp');
+                $rc = new RouteController();
+                $this->getComponent('html')->getSubComponents('body')->setSubComponents([
+                    'header' => new Component('header', [], '', [
+                        'h1' => new Component('h1', [], 'INICIO - EJECUTIVOS'),
+                        'h2' => new Component('h2', [], 'SinisterApp')
+                    ]),
+                    'main' => new Component('main', [], '', [
+                        'p' => new Component('p', [], 'Bienvenido a SinisterApp, una aplicación para gestionar los siniestros de vehículos de manera eficiente.<br>Te encuentras en la sección de INICIO - EJECUTIVOS, revisa la barra de navegación para poder utilizar la aplicación.'),
+                        'ul' => new Component('ul', [], '', [
+                            'li1' => new Component('li', [], '', [
+                                'a' => new Component('a', ['href' => $rc->getRoute('view-sinisterExecutive')->getUrl()], 'SINIESTROS'),
+                            ]),
+                            'li2' => new Component('li', [], '', [
+                                'a' => new Component('a', ['href' => $rc->getRoute('view-taskExecutive')->getUrl()], 'TAREAS'),
+                            ]),
+                            'li3' => new Component('li', [], '', [
+                                'a' => new Component('a', ['href' => $rc->getRoute('view-solutionExecutive')->getUrl()], 'SOLUCIONES')
+                            ]),
+                            'li4' => new Component('li', [], '', [
+                                'a' => new Component('a', ['href' => $rc->getRoute('view-vehicleExecutive')->getUrl()], 'VEHICULOS')
+                            ])
+                        ])
+                    ]),
+                    'footer' => new Component('footer', [], '', [
+                        'ul' => new Component('ul', [], '', [
+                            'li1' => new Component('li', [], '', [
+                                'a' => new Component('a', ['href' => '#'], '¿Quiénes somos?'),
+                            ]),
+                            'li2' => new Component('li', [], '', [
+                                'a' => new Component('a', ['href' => '#'], 'Contáctanos'),
+                            ])
+                        ]),
+                        'span' => new Component('span', [], 'ILLESOFT © Derechos reservados')
+                    ])
+                ]);
+                break;
             case 'homeOperator':
-                $this->getComponent('html')->getSubComponents('head')->getSubComponents('title')->setValue('Iniciar sesión - SinisterApp');
+                $this->getComponent('html')->getSubComponents('head')->getSubComponents('title')->setValue('Inicio - OPERADORES - SinisterApp');
                 $rc = new RouteController();
                 $this->getComponent('html')->getSubComponents('body')->setSubComponents([
                     'header' => new Component('header', [], '', [
@@ -95,7 +171,7 @@ class View
                         'h2' => new Component('h2', [], 'SinisterApp')
                     ]),
                     'main' => new Component('main', [], '', [
-                        'p' => new Component('p', [], 'Bienvenido a SinisterApp, una aplicación para gestionar los siniestros de vehículos de manera eficiente.<br>Te encuentras en la sección de inicio - operadores, revisa la barra de navegación para poder utilizar la aplicación.'),
+                        'p' => new Component('p', [], 'Bienvenido a SinisterApp, una aplicación para gestionar los siniestros de vehículos de manera eficiente.<br>Te encuentras en la sección de INICIO - OPERADORES, revisa la barra de navegación para poder utilizar la aplicación.'),
                         'ul' => new Component('ul', [], '', [
                             'li1' => new Component('li', [], '', [
                                 'a' => new Component('a', ['href' => $rc->getRoute('view-sinisterOperator')->getUrl()], 'SINIESTROS'),
@@ -121,7 +197,6 @@ class View
                     ])
                 ]);
                 break;
-
             case 'notificationPage':
                 $this->getComponent('html')->getSubComponents('head')->getSubComponents('title')->setValue('Iniciar sesión - SinisterApp');
                 $rc = new RouteController();

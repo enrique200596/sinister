@@ -1,4 +1,7 @@
 <?php
+
+use function PHPSTORM_META\type;
+
 require_once 'app.php';
 
 class RouteController
@@ -7,6 +10,7 @@ class RouteController
 
     public function __construct()
     {
+        //********************VIEWS********************
         $this->addRoute('view', 'signIn', function () {
             $app = new App();
             $app->viewSignIn();
@@ -17,14 +21,24 @@ class RouteController
             $app->viewSignUp();
         });
 
+        $this->addRoute('view', 'notificationPage', function () {
+            $app = new App();
+            $app->viewNotificationPage();
+        });
+
         $this->addRoute('view', 'homeWithoutLoggingIn', function () {
             $app = new App();
             $app->viewHomeWithoutLoggingIn();
         });
 
-        $this->addRoute('view', 'notificationPage', function () {
+        $this->addRoute('view', 'homeAdministrator', function () {
             $app = new App();
-            $app->viewNotificationPage();
+            $app->viewHomeAdministrator();
+        });
+
+        $this->addRoute('view', 'homeExecutive', function () {
+            $app = new App();
+            $app->viewHomeExecutive();
         });
 
         $this->addRoute('view', 'homeOperator', function () {
@@ -32,9 +46,29 @@ class RouteController
             $app->viewHomeOperator();
         });
 
+        $this->addRoute('view', 'sinisterAdministrator', function () {
+            $app = new App();
+            $app->viewSinisterAdministrator();
+        });
+
+        $this->addRoute('view', 'sinisterExecutive', function () {
+            $app = new App();
+            $app->viewSinisterExecutive();
+        });
+
         $this->addRoute('view', 'sinisterOperator', function () {
             $app = new App();
             $app->viewSinisterOperator();
+        });
+
+        $this->addRoute('view', 'taskAdministrator', function () {
+            $app = new App();
+            $app->viewTaskAdministrator();
+        });
+
+        $this->addRoute('view', 'taskExecutive', function () {
+            $app = new App();
+            $app->viewTaskExecutive();
         });
 
         $this->addRoute('view', 'taskOperator', function () {
@@ -42,11 +76,22 @@ class RouteController
             $app->viewTaskOperator();
         });
 
+        $this->addRoute('view', 'solutionAdministrator', function () {
+            $app = new App();
+            $app->viewSolutionAdministrator();
+        });
+
+        $this->addRoute('view', 'solutionExecutive', function () {
+            $app = new App();
+            $app->viewSolutionExecutive();
+        });
+
         $this->addRoute('view', 'solutionOperator', function () {
             $app = new App();
             $app->viewSolutionOperator();
         });
 
+        //********************USERS********************
         $this->addRoute('user', 'signIn', function () {
             $app = new App();
             $app->userSignIn();
@@ -57,6 +102,7 @@ class RouteController
             $app->userSignUp();
         });
 
+        //********************ERRORS********************
         $this->addRoute('error', 'unknownRoute', function () {
             $app = new App();
             $app->errorUnknownRoute();
@@ -84,12 +130,15 @@ class RouteController
         $this->routes[$r->getName()] = $r;
     }
 
-    public function validateRoute(Route $r)
+    public function validateRoute(Route|string $r)
     {
-        if ($r->getName() === '-') {
-            $this->redirect('view-homeWithoutLoggingIn');
+        if (!(gettype($r) === 'string')) {
+            if ($r->getName() === '-') {
+                $this->redirect('view-homeWithoutLoggingIn');
+            }
+            $r = $r->getName();
         } else {
-            return isset($this->routes[$r->getName()]);
+            return isset($this->routes[$r]);
         }
     }
 
@@ -108,7 +157,13 @@ class RouteController
 
     public function redirect(string $routeName)
     {
-        header('Location: ' . $this->getRoute($routeName)->getUrl());
+        $url = '';
+        if ($this->validateRoute($routeName) === true) {
+            $url = $this->getRoute($routeName)->getUrl();
+        } else {
+            $url = $this->getRoute('error-unknownRoute')->getUrl();
+        }
+        header('Location: ' . $url);
         die();
     }
 

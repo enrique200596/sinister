@@ -7,37 +7,79 @@ require_once 'user.php';
 
 class App
 {
-    public function viewSignIn()
+
+    //--------------------FUNCIONES AUXILIARES DE APP--------------------
+    private function redirect(string $routeName)
+    {
+        $rc = new RouteController();
+        $rc->redirect($routeName);
+    }
+
+    private function checkSession()
+    {
+        $sc = new SessionController();
+        if ($sc->getData('user') === null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private function redirectHome()
+    {
+        $sc = new SessionController();
+        $u = $sc->getData('user');
+        if ($u->checkAccessKey('Administrator') === true) {
+            $this->redirect('view-homeAdministrator');
+        } elseif ($u->checkAccessKey('Executive') === true) {
+            $this->redirect('view-homeExecutive');
+        } elseif ($u->checkAccessKey('Operator') === true) {
+            $this->redirect('view-homeOperator');
+        }
+    }
+
+    public function view(string $process)
     {
         $v = new View();
-        $v->buildPage('signIn');
+        $v->buildPage($process);
         $v->show();
+    }
+
+    private function routeAccessControl(string $view)
+    {
+        if ($view === 'signIn' || $view === 'signUp' || $view === 'homeWithoutLoggingIn') {
+            if ($this->checkSession() === false) {
+                $this->view($view);
+            } else {
+                $this->redirectHome();
+            }
+        } else {
+            if ($this->checkSession() === true) {
+                $this->view($view);
+            } else {
+                $this->redirect('view-signIn');
+            }
+        }
+    }
+
+    //--------------------FUNCIONES DE ROUTE-CONTROLLER--------------------
+
+    //--------------------FUNCIONES DE VIEW--------------------
+    public function viewSignIn()
+    {
+        if ($this->checkSession() === false) {
+            $this->view('signIn');
+        } else {
+            $this->redirectHome();
+        }
     }
 
     public function viewSignUp()
     {
-        $v = new View();
-        $v->buildPage('signUp');
-        $v->show();
-    }
-
-    public function viewHomeWithoutLoggingIn()
-    {
-        $sc = new SessionController();
-        if ($sc->getData('user') === null) {
-            $v = new View();
-            $v->buildPage('homeWithoutLoggingIn');
-            $v->show();
+        if ($this->checkSession() === false) {
+            $this->view('signUp');
         } else {
-            $u = $sc->getData('user');
-            $rc = new RouteController();
-            if ($u->checkAccessKey('Administrator') === true) {
-                $rc->redirect('view-homeAdministrator');
-            } elseif ($u->checkAccessKey('Executive') === true) {
-                $rc->redirect('view-homeExecutive');
-            } elseif ($u->checkAccessKey('Operator') === true) {
-                $rc->redirect('view-homeOperator');
-            }
+            $this->redirectHome();
         }
     }
 
@@ -50,34 +92,72 @@ class App
         $v->show();
     }
 
+    public function viewHomeWithoutLoggingIn()
+    {
+        $this->routeAccessControl('homeWithoutLoggingIn');
+    }
+
+    public function viewHomeAdministrator()
+    {
+        $this->routeAccessControl('homeAdministrator');
+    }
+
+    public function viewHomeExecutive()
+    {
+        $this->routeAccessControl('homeExecutive');
+    }
+
     public function viewHomeOperator()
     {
-        $v = new View();
-        $v->buildPage('homeOperator');
-        $v->show();
+        $this->routeAccessControl('homeOperator');
+    }
+
+    public function viewSinisterAdministrator()
+    {
+        $this->routeAccessControl('sinisterAdministrator');
+    }
+
+    public function viewSinisterExecutive()
+    {
+        $this->routeAccessControl('sinisterExecutive');
     }
 
     public function viewSinisterOperator()
     {
-        $v = new View();
-        $v->buildPage('sinisterOperator');
-        $v->show();
+        $this->routeAccessControl('sinisterOperator');
+    }
+
+    public function viewTaskAdministrator()
+    {
+        $this->routeAccessControl('taskAdministrator');
+    }
+
+    public function viewTaskExecutive()
+    {
+        $this->routeAccessControl('taskExecutive');
     }
 
     public function viewTaskOperator()
     {
-        $v = new View();
-        $v->buildPage('taskOperator');
-        $v->show();
+        $this->routeAccessControl('taskOperator');
+    }
+
+    public function viewSolutionAdministrator()
+    {
+        $this->routeAccessControl('solutionAdministrator');
+    }
+
+    public function viewSolutionExecutive()
+    {
+        $this->routeAccessControl('solutionExecutive');
     }
 
     public function viewSolutionOperator()
     {
-        $v = new View();
-        $v->buildPage('solutionOperator');
-        $v->show();
+        $this->routeAccessControl('solutionOperator');
     }
 
+    //--------------------FUNCIONES DE USER--------------------
     public function userSignIn()
     {
         $ec = new ErrorController();
@@ -177,6 +257,7 @@ class App
         }
     }
 
+    //--------------------FUNCIONES DE ERROR--------------------
     public function errorUnknownRoute()
     {
         $v = new View();
