@@ -128,16 +128,4 @@ class View
     {
         echo $this->doctype->getHtml() . $this->html->getHtml();
     }
-
-    public function addHeaderSubComponent()
-    {
-    }
-
-    public function addMainSubComponent()
-    {
-    }
-
-    public function addFooterSubComponent()
-    {
-    }
 }
