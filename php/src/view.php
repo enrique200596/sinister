@@ -20,17 +20,18 @@ class View
 
     public function setTitle(string $title)
     {
-        $this->html->getSubComponent('head')->getSubComponent('title')->setValue($title);
+        $this->title = $title;
     }
 
     public function setHeaderTitle(string $headerTitle)
     {
-        $this->html->getSubComponent('body')->getSubComponent('header')->getSubComponent('headerH1')->setValue($headerTitle);
+        $this->header->addSubComponent('h1', new Component('h1', [], $headerTitle));
     }
 
     public function setHeaderSubTitle(string $headerSubTitle)
     {
-        $this->html->getSubComponent('body')->getSubComponent('header')->getSubComponent('headerH2')->setValue($headerSubTitle);
+        $this->header->addSubComponent('h2', new Component('h2', [], $headerSubTitle));
+    
     }
 
     public function build()

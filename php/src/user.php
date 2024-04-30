@@ -8,7 +8,7 @@ class User
     private $password;
     private $accessKey;
 
-    public function __construct(string $email, string $password, string $name = '', string $birthdate = '')
+    public function __construct(string $email, string $password, string $accessKey = '', string $name = '', string $birthdate = '', int $id = 0)
     {
         $this->setEmail($email);
         $this->setPassword($password);
@@ -18,29 +18,35 @@ class User
         if ($birthdate !== '') {
             $this->setBirthdate($birthdate);
         }
+        if ($accessKey === '') {
+            $this->setAccessKey(password_hash('guest', PASSWORD_DEFAULT));
+        } else {
+            $this->setAccessKey($accessKey);
+        }
+        $this->setId($id);
     }
 
-    private function setEmail(string $email)
+    public function setEmail(string $email)
     {
         $this->email = $email;
     }
 
-    private function getEmail()
+    public function getEmail()
     {
         return $this->email;
     }
 
-    private function setPassword(string $password)
+    public function setPassword(string $password)
     {
         $this->password = $password;
     }
 
-    private function getPassword()
+    public function getPassword()
     {
         return $this->password;
     }
 
-    private function setId($id)
+    public function setId($id)
     {
         $this->id = $id;
     }
@@ -50,22 +56,22 @@ class User
         return $this->id;
     }
 
-    private function setName($name)
+    public function setName($name)
     {
         $this->name = $name;
     }
 
-    private function getName()
+    public function getName()
     {
         return $this->name;
     }
 
-    private function setBirthdate(string $birthdate)
+    public function setBirthdate(string $birthdate)
     {
         $this->birthdate = new Datetime($birthdate . "00:00:00");
     }
 
-    private function getBirthdate(string $type)
+    public function getBirthdate(string $type)
     {
         if ($type === 'string') {
             return $this->birthdate->format('Y-m-d');
@@ -76,12 +82,12 @@ class User
         }
     }
 
-    private function setAccessKey($accessKey)
+    public function setAccessKey($accessKey)
     {
         $this->accessKey = $accessKey;
     }
 
-    private function getAccessKey()
+    public function getAccessKey()
     {
         return password_hash($this->accessKey, PASSWORD_DEFAULT);
     }

@@ -3,20 +3,12 @@ class SessionController
 {
     public function __construct()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) session_start();
-    }
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
 
-    private function checkData($dataName)
-    {
-        return isset($_SESSION['sinisterApp'][$dataName]);
-    }
-
-    public function getData(string $dataName)
-    {
-        if ($this->checkData($dataName)) {
-            return $_SESSION['sinisterApp'][$dataName];
-        } else {
-            return null;
+        if (isset($_SESSION['sinisterApp']) === false) {
+            $_SESSION['sinisterApp'] = [];
         }
     }
 
@@ -25,15 +17,18 @@ class SessionController
         $_SESSION['sinisterApp'][$dataName] = $data;
     }
 
-    public function removeData(string $dataName)
+    public function checkData(string $dataName)
     {
-        if ($this->checkData($dataName)) {
-            unset($_SESSION[$dataName]);
-        }
+        return isset($_SESSION['sinisterApp'][$dataName]);
     }
 
-    public function createCookie(string $cookieName, mixed $value)
+    public function getData(string $dataName)
     {
-        setcookie($cookieName, $value, (time() * 60) * 10);
+        return $_SESSION['sinisterApp'][$dataName];
+    }
+
+    public function removeData(string $dataName)
+    {
+        unset($_SESSION['sinisterApp'][$dataName]);
     }
 }
